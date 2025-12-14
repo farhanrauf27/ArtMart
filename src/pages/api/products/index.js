@@ -1,6 +1,6 @@
 // pages/api/products/index.js
-import connectMongo from '@/lib/mongodb';
-import Product from '@/models/Product';
+import connectMongo from '../../../../lib/mongodb';
+import Product from '../../../../models/Products';
 
 export default async function handler(req, res) {
   await connectMongo();
