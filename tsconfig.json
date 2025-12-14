@@ -16,7 +16,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "plugins": [
       {
         "name": "next"
@@ -28,8 +28,16 @@
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/components/navbar.jsx", "src/components/footer.jsx", "src/components/contact.jsx", "src/pages/api/google-login.js", "src/pages/login.jsx", "lib/mongodb.js", "src/pages/api/products/index.js"  ],
+    "**/*.tsx",
+    "src/components/navbar.jsx",
+    "src/components/footer.jsx",
+    "src/components/contact.jsx",
+    "src/pages/api/google-login.js",
+    "src/pages/login.jsx",
+    "lib/mongodb.js",
+    "src/pages/api/products/index.js",
+    ".next/dev/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]
