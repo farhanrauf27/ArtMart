@@ -1,75 +1,145 @@
 import '../app/globals.css';
 import { useState } from 'react';
 import { FiX } from 'react-icons/fi';
+import { useCart } from '../../context/CartContext';
+import Swal from 'sweetalert2';
+
 const ProductCard = ({ product }) => {
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+    const cartData = useCart(); // Get cart data safely
 
+const { 
+    addToCart = () => {}, 
+    isInitialized = true // Default to true so it doesn't block
+  } = cartData || {};
   const openQuickView = () => setIsQuickViewOpen(true);
   const closeQuickView = () => setIsQuickViewOpen(false);
-    return (
-      <div className="group relative bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300">
-        {/* Badges */}
-        <div className="absolute top-4 left-4 z-10 flex gap-2">
-          {product.isNew && (
-            <span className="bg-amber-400 text-amber-900 text-xs font-bold px-2 py-1 rounded-full">
-              NEW
-            </span>
-          )}
-          {product.rating > 4.5 && (
-            <span className="bg-indigo-600 text-white text-xs font-bold px-2 py-1 rounded-full">
-              TOP
-            </span>
-          )}
-        </div>
+
+  // In the handleAddToCart function in ProductCard.js
+const handleAddToCart = () => {
+  if (!isInitialized) {
+    Swal.fire({
+      title: 'Loading...',
+      text: 'Cart is initializing, please wait a moment',
+      icon: 'info',
+      timer: 1500,
+      showConfirmButton: false,
+      background: '#1a1a1a',
+      color: '#fbbf24',
+      toast: true,
+      position: 'top-end',
+    });
+    return;
+  }
   
-        {/* Product Image */}
-        <div className="relative aspect-square overflow-hidden">
-          <img
-            src={product.picture}
-            alt={product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-          {/* Quick View Button */}
-          <div className="group relative">
-      {/* Your existing product card content */}
-      <button 
-        onClick={openQuickView}
-        className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white text-indigo-600 font-medium py-2 px-6 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-lg hover:bg-indigo-600 hover:text-white"
-      >
-        Quick View
-      </button>
+  addToCart(product);
+  Swal.fire({
+    title: 'Added to Cart!',
+    text: `${product.name} has been added to your cart.`,
+    icon: 'success',
+    timer: 1500,
+    showConfirmButton: false,
+    background: '#1a1a1a',
+    color: '#fbbf24',
+    toast: true,
+    position: 'top-end',
+  });
+};
+
+  return (
+    <div className="group relative bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 border border-amber-50 hover:border-amber-200">
+      {/* Badges */}
+      <div className="absolute top-4 left-4 z-10 flex gap-2">
+        {product.isNew && (
+          <span className="bg-amber-400 text-amber-900 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+            NEW
+          </span>
+        )}
+        {product.rating > 4.5 && (
+          <span className="bg-gray-800 text-amber-100 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+            PREMIUM
+          </span>
+        )}
+      </div>
+
+      {/* Product Image */}
+      <div className="relative aspect-square overflow-hidden bg-gray-50">
+        <img
+          src={product.picture}
+          alt={product.name}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
+        
+        {/* Quick View Button */}
+        <button 
+          onClick={openQuickView}
+          className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gray-900 text-amber-100 font-medium py-2.5 px-6 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-lg hover:bg-amber-700 hover:text-white border border-amber-600"
+        >
+          Quick View
+        </button>
+      </div>
+
+      {/* Product Info */}
+      <div className="p-5">
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <p className="text-xs font-medium text-amber-700 uppercase tracking-wider mb-1">
+              {product.brand || 'Antique'}
+            </p>
+            <h3 className="font-bold text-gray-900 text-lg line-clamp-2">{product.name}</h3>
+          </div>
+          <span className="font-bold text-amber-800 text-xl">Rs. {product.price}</span>
+        </div>
+        
+        {/* Rating */}
+        
+
+        <button 
+          onClick={handleAddToCart}
+          className="w-full bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-gray-900 text-white py-3 rounded-lg transition-all duration-300 font-medium shadow-md hover:shadow-lg"
+        >
+          Add to Cart
+        </button>
+      </div>
 
       {/* Quick View Modal */}
       {isQuickViewOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="relative bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4">
+          <div className="relative bg-gradient-to-br from-amber-50 to-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-amber-200 shadow-2xl">
             <button 
               onClick={closeQuickView}
-              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 z-10"
+              className="absolute top-4 right-4 p-2 rounded-full bg-gray-800 hover:bg-gray-900 text-amber-100 z-10 transition-colors"
             >
               <FiX className="w-5 h-5" />
             </button>
 
-            <div className="grid md:grid-cols-2 gap-8 p-6">
+            <div className="grid md:grid-cols-2 gap-8 p-8">
               {/* Product Image */}
               <div className="sticky top-0">
-                <img
-                  src={product.picture}
-                  alt={product.name}
-                  className="w-full h-auto rounded-lg object-cover"
-                />
+                <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+                  <img
+                    src={product.picture}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               </div>
 
               {/* Product Details */}
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h2>
-                
-                <div className="flex items-center mb-4">
+                <div className="mb-4">
+                  <span className="text-sm font-semibold text-amber-700 uppercase tracking-wide">
+                    {product.brand || 'Antique'}
+                  </span>
+                  <h2 className="text-3xl font-bold text-gray-900 mt-2 mb-3">{product.name}</h2>
+                </div>
+
+                <div className="flex items-center mb-6">
                   <div className="flex text-amber-400">
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className={`w-5 h-5 ${i < Math.floor(4) ? 'fill-current' : 'fill-none'}`}
+                        className={`w-6 h-6 ${i < Math.floor(4) ? 'fill-current' : 'fill-none'}`}
                         stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
@@ -77,30 +147,29 @@ const ProductCard = ({ product }) => {
                       </svg>
                     ))}
                   </div>
-                  <span className="text-gray-600 ml-2">{product.rating} ({50} reviews)</span>
+                  <span className="text-gray-600 ml-3">{product.rating} ({50} reviews)</span>
                 </div>
-
-                <p className="text-3xl font-bold text-gray-900 mb-4">${product.price}</p>
-
-                <p className="text-gray-700 mb-6">{product.description}</p>
 
                 <div className="mb-6">
-                  <h3 className="text-sm font-medium text-gray-900">Details</h3>
-                  <ul className="mt-2 text-gray-700 space-y-1">
-                    <li>Category: {product.category}</li>
-                    <li>Brand: {product.brand}</li>
-                    <li>SKU: {product.subcategory}</li>
-                    {product.sizes && (
-                      <li>Available Sizes: {product.sizes.join(', ')}</li>
-                    )}
-                  </ul>
+                  <p className="text-4xl font-bold text-gray-900">Rs. {product.price}</p>
+                  <p className="text-sm text-gray-500 mt-1">Inclusive of all taxes</p>
                 </div>
 
-                <div className="flex flex-wrap gap-3">
-                  <button className="flex-1 bg-indigo-600 text-white py-3 px-6 rounded-lg hover:bg-indigo-700 transition-colors">
+                <p className="text-gray-700 mb-8 leading-relaxed">{product.description}</p>
+
+              
+
+                <div className="flex flex-wrap gap-4">
+                  <button 
+                    onClick={() => {
+                      handleAddToCart();
+                      closeQuickView();
+                    }}
+                    className="flex-1 bg-gradient-to-r from-amber-700 to-amber-800 text-white py-3.5 px-6 rounded-lg hover:from-amber-800 hover:to-gray-900 transition-all duration-300 font-medium shadow-md"
+                  >
                     Add to Cart
                   </button>
-                  <button className="flex-1 border border-gray-300 text-gray-700 py-3 px-6 rounded-lg hover:bg-gray-50 transition-colors">
+                  <button className="flex-1 border border-amber-300 text-gray-700 py-3.5 px-6 rounded-lg hover:bg-amber-50 transition-all duration-300 font-medium">
                     Add to Wishlist
                   </button>
                 </div>
@@ -110,38 +179,7 @@ const ProductCard = ({ product }) => {
         </div>
       )}
     </div>
-        </div>
-  
-        {/* Product Info */}
-        <div className="p-4">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="font-bold text-gray-800">{product.name}</h3>
-            <span className="font-bold text-indigo-600">${product.price}</span>
-          </div>
-          
-          {/* Rating */}
-          <div className="flex items-center mb-3">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <svg
-                  key={i}
-                  className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'text-amber-400' : 'text-gray-300'}`}
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-              ))}
-            </div>
-            <span className="text-xs text-gray-500 ml-1">({product.rating})</span>
-          </div>
-  
-          <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg transition-colors duration-300 font-medium">
-            Add to Cart
-          </button>
-        </div>
-      </div>
-    );
-  };
+  );
+};
 
-  export default ProductCard;
+export default ProductCard;

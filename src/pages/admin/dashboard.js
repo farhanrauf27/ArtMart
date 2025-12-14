@@ -5,6 +5,7 @@ import AddProductPage from '../../components/Products/add-product';
 import AllUsers from '../../components/Products/AllUsers';
 import ViewProducts from '../../components/Products/view-products';           
 import Settings from '../../components/Settings';
+import OrderManagement from '../../components/Orders/order-management';
 import Swal from 'sweetalert2';
 
 
@@ -120,6 +121,19 @@ const handleLogout = async () => {
               active={activeTab === 'analytics'}
               onClick={() => setActiveTab('analytics')}
             />
+
+            <NavItem 
+  icon={
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+    </svg>
+  }
+  text="Orders"
+  active={activeTab === 'orders'}
+  onClick={() => setActiveTab('orders')}
+/>
+
+
             <NavItem 
               icon={
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -196,6 +210,9 @@ const handleLogout = async () => {
               {activeTab === 'users' && (
                 <div><AllUsers/></div>
               )}
+              {activeTab === 'orders' && (
+  <div><OrderManagement /></div>
+)}
               {activeTab === 'analytics' && (
                 <div><ViewProducts/></div>
               )}
